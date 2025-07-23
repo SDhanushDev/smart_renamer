@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartRenamer - Professional File Renaming Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <h1 class="text-xl font-bold text-gray-900 dark:text-white">SmartRenamer</h1>
+                        </div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                            Professional File Renaming Tool
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                            </svg>
+                        </button>
+                        <button id="export-log" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
+                            Export Log
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Panel - Folder Selection & Rules -->
+                <div class="lg:col-span-1 space-y-6">
+                    <!-- Folder Selection -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Select Folder</h2>
+                        <div id="drop-zone" class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-primary-500 transition-colors cursor-pointer">
+                            <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Drop folder here or click to browse</p>
+                            <button id="browse-folder" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
+                                Browse Folder
+                            </button>
+                        </div>
+                        <div id="folder-info" class="mt-4 hidden">
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Selected: <span id="folder-path" class="font-medium"></span></p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Files: <span id="file-count" class="font-medium"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- Rename Rules -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Rename Rules</h2>
+                        
+                        <div class="space-y-4">
+                            <!-- Prefix -->
+                            <div>
+                                <label class="flex items-center mb-2">
+                                    <input type="checkbox" id="prefix-enabled" class="mr-2">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white">Add Prefix</span>
+                                </label>
+                                <input type="text" id="prefix-text" placeholder="Enter prefix" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white" disabled>
+                            </div>
+
+                            <!-- Suffix -->
+                            <div>
+                                <label class="flex items-center mb-2">
+                                    <input type="checkbox" id="suffix-enabled" class="mr-2">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white">Add Suffix</span>
+                                </label>
+                                <input type="text" id="suffix-text" placeholder="Enter suffix" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white" disabled>
+                            </div>
+
+                            <!-- Numbering -->
+                            <div>
+                                <label class="flex items-center mb-2">
+                                    <input type="checkbox" id="numbering-enabled" class="mr-2">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white">Add Numbering</span>
+                                </label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="number" id="numbering-start" placeholder="Start" value="1" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white" disabled>
+                                    <input type="number" id="numbering-digits" placeholder="Digits" value="3" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white" disabled>
+                                </div>
+                            </div>
+
+                            <!-- Date -->
+                            <div>
+                                <label class="flex items-center mb-2">
+                                    <input type="checkbox" id="date-enabled" class="mr-2">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white">Add Date</span>
+                                </label>
+                                <select id="date-format" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white" disabled>
+                                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                    <option value="MM-DD-YYYY">MM-DD-YYYY</option>
+                                    <option value="DD-MM-YYYY">DD-MM-YYYY</option>
+                                    <option value="YYYYMMDD">YYYYMMDD</option>
+                                </select>
+                            </div>
+
+                            <!-- Replace -->
+                            <div>
+                                <label class="flex items-center mb-2">
+                                    <input type="checkbox" id="replace-enabled" class="mr-2">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white">Find & Replace</span>
+                                </label>
+                                <div class="space-y-2">
+                                    <input type="text" id="replace-find" placeholder="Find text" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white" disabled>
+                                    <input type="text" id="replace-with" placeholder="Replace with" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex space-x-3">
+                            <button id="preview-btn" class="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50" disabled>
+                                Preview
+                            </button>
+                            <button id="apply-btn" class="flex-1 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50" disabled>
+                                Apply
+                            </button>
+                        </div>
+                        
+                        <button id="undo-btn" class="w-full mt-3 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50" disabled>
+                            Undo Last Operation
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Panel - File Preview -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">File Preview</h2>
+                            <div id="progress-container" class="hidden">
+                                <div class="w-64 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div id="progress-bar" class="bg-primary-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="file-table-container" class="overflow-x-auto">
+                            <div id="no-files" class="text-center py-12">
+                                <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No folder selected</h3>
+                                <p class="text-gray-600 dark:text-gray-400">Select a folder to see files for renaming</p>
+                            </div>
+                            
+                            <table id="file-table" class="w-full hidden">
+                                <thead>
+                                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                                        <th class="text-left py-3 px-2 text-sm font-medium text-gray-900 dark:text-white">Original Name</th>
+                                        <th class="text-left py-3 px-2 text-sm font-medium text-gray-900 dark:text-white">New Name</th>
+                                        <th class="text-left py-3 px-2 text-sm font-medium text-gray-900 dark:text-white">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="file-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

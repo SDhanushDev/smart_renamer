@@ -1,0 +1,19 @@
+{
+  "name": "smart-renamer",
+  "version": "1.0.0",
+  "description": "Professional batch file renaming tool",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["electron", "file-rename", "batch-processing", "desktop-app"],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  }
+}
